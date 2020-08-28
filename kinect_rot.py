@@ -1,3 +1,12 @@
+__author__="Adam Brewer"
+"""
+Author: Adam Brewer
+
+This is just a personal script I use to manage my Xbox 360 Kinect cam along with
+my second webcam. Made it a few months ago out of boredom cause I wanted to be
+able to control my Kinect's motor thingy
+"""
+
 from pykinect import nui
 import keyboard
 import time
@@ -20,14 +29,13 @@ TIME_DELAY = 0.1
 TIME_DELAY_INC = 0.05
 
 def video_handler_function(frame):
-    global CUR_CAM, RIGHT_CAM
     #print(CUR_CAM[0])
     if CUR_CAM[0] == 'left':
         video = numpy.empty((480,640,4),numpy.uint8)
         frame.image.copy_bits(video.ctypes.data)
     elif CUR_CAM[0] == 'right':
         ret, video = RIGHT_CAM.read()
-    cv2.imshow('KINECT Video Stream', video)
+    cv2.imshow('Video Stream', video)
     
     
 def epic_constant_rotation_meme(camera,running):
@@ -56,18 +64,15 @@ def _cam_swap(cur_cam):
     else: cur_cam[0] = 'left'
 
 def _breakthrd_quickswap():
-    global BREAKTHRD
     BREAKTHRD[0] = not BREAKTHRD[0]
 
 def epic_cam_swap_meme(cur_cam):
-    global BREAKTHRD, TIME_DELAY
     while True:
         if not BREAKTHRD[0]: 
             _cam_swap(cur_cam)
             time.sleep(abs(TIME_DELAY))
 
 def adjust_time_delay(adjustment_amnt):
-    global TIME_DELAY
     TIME_DELAY += adjustment_amnt
     print(TIME_DELAY)
     if TIME_DELAY <= 0:
@@ -82,7 +87,7 @@ def run():
     runtime.video_stream.open(nui.ImageStreamType.Video, 2,
                              nui.ImageResolution.Resolution640x480,
                              nui.ImageType.Color)
-    cv2.namedWindow('KINECT Video Stream', cv2.WINDOW_AUTOSIZE)
+    cv2.namedWindow('Video Stream', cv2.WINDOW_AUTOSIZE)
     
     
     camera = nui.Camera(runtime)
@@ -102,7 +107,7 @@ def run():
         key = cv2.waitKey(0)
         if key == 27:
             RIGHT_CAM.release()
-            cv2.destroyWindow('KINECT Video Stream')
+            cv2.destroyWindow('Video Stream')
             runtime.close()
             break
                 
